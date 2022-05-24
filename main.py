@@ -651,13 +651,13 @@ def printmacierze(lista):
         print("\n")
 
 
-wartosci_wlasne = wartosciwlasne(a)
-wartosci_wlasne = np.matrix.round(wartosci_wlasne, 3)
-print("Macierz \n", a)
-print("Wartosci własne macierzy\n", wartosci_wlasne)
-slownik = macierzewlasne(a, wartosci_wlasne)
-print("Macierze po odjeciu wartosci własnych z przekatnej\n")
-printmacierze(slownik)
+# wartosci_wlasne = wartosciwlasne(a)
+# wartosci_wlasne = np.matrix.round(wartosci_wlasne, 3)
+# print("Macierz \n", a)
+# print("Wartosci własne macierzy\n", wartosci_wlasne)
+# slownik = macierzewlasne(a, wartosci_wlasne)
+# print("Macierze po odjeciu wartosci własnych z przekatnej\n")
+# printmacierze(slownik)
 
 
 def wektorywlasne(lista):
@@ -672,9 +672,58 @@ def wektorywlasne(lista):
                     lista[j][k] = lista[j][k] - ratio * lista[i][k]
     return [lista[i][len(lista)]/lista[i][i] for i in range(len(lista))]
 
+
 # print("Wektory wlasne macierzy:\n")
+# print(slownik)
 # for i in slownik:
-#     # print("PRZED\n", slownik[i])
-#     slownik[i] = np.delete(slownik[i], len(slownik)-1, 0)
-#     # print("PO\n", slownik[i])
-#     print(np.round(wektorywlasne(slownik[i])+[-1.], 4)*-1)
+    # print("PRZED\n", slownik[i])
+    # slownik[i] = np.delete(slownik[i], len(slownik)-1, 0)
+    # print("PO\n", slownik[i])
+    # print(np.round(wektorywlasne(slownik[i])+[-1.], 4)*-1)
+
+
+def czyOrtogonalna(lista):
+    kopia = np.round(np.dot(np.transpose(lista), lista), 2)
+    x = np.count_nonzero(np.round(kopia - np.diag(np.diagonal(kopia)), 3))
+    if np.round(x, 3) == 0:
+        return True
+    return False
+
+
+def czyOrtonormalna(lista):
+    mac_jedn = np.round(np.dot(np.transpose(lista), lista), 2)
+    diagonalna = np.diagonal(mac_jedn)
+    for i in diagonalna:
+        if i != 1:
+            return False
+    return True
+
+
+def normalizacja(lista):
+    listaE=[]
+    for j in range(len(lista[0])):
+        norma = math.sqrt(np.dot(wektorKolumnowy(lista, j), wektorKolumnowy(lista, j)))
+        listaE += [1/norma * wektorKolumnowy(lista, j)]
+    listaE = np.transpose(listaE)
+    return listaE
+
+
+def zmianaBazy(lista, wektor):
+    return np.dot(np.transpose(lista), wektor)
+
+
+wektor = np.array([8, 6, 2, 3, 4, 6, 6, 5])
+ortogonalna = np.array([[1., 1., 1., 1., 1., 1., 1., 1.],
+                        [1., 1., 1., 1., -1., -1., -1., -1],
+                        [1., 1., -1., -1., 0., 0., 0., 0.],
+                        [0., 0., 0., 0., 1., 1., -1., -1.],
+                        [1., -1., 0., 0., 0., 0., 0., 0.],
+                        [0., 0., 1., -1., 0., 0., 0., 0.],
+                        [0., 0., 0., 0., 1., -1., 0., 0.],
+                        [0., 0., 0., 0., 0., 0., 1., -1.]])
+ortogonalna = np.transpose(ortogonalna)
+print("Czy macierz ortogonalna: ", czyOrtogonalna(ortogonalna))
+macierzNormalna= normalizacja(ortogonalna)
+print("Czy macierz ortonormalna: ", czyOrtonormalna(macierzNormalna))
+zmienionaBaza = zmianaBazy(macierzNormalna, wektor)
+print("Wektor w zmienionej bazie: ", zmienionaBaza)
